@@ -1,21 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
-const { getConnection } = require("./src/connection/database");
+const { getUsers } = require("./connection/functions");
 
 require("./src/connection/database");
 require("electron-reload")(__dirname);
-
-const getUsers = async () => {
-  const conn = await getConnection();
-  const results = await conn.query("SELECT * FROM users");
-  return results;
-};
-
-function handleSetTitle(event, title) {
-  const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
-  win.setTitle(title);
-}
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -26,17 +14,10 @@ const createWindow = () => {
     },
   });
 
-  ipcMain.on("set-title", (event, title) => {
-    const webContents = event.sender;
-    const win = BrowserWindow.fromWebContents(webContents);
-    win.setTitle(title);
-  });
-
-  win.loadFile("./src/views/menu.html");
+  win.loadFile("./src/views/index.html");
 };
 
 app.whenReady().then(() => {
-  ipcMain.on("set-title", handleSetTitle);
   ipcMain.handle("ping", () => "pong");
   ipcMain.handle("get-users", async () => {
     return await getUsers();

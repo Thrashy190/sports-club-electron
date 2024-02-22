@@ -7,18 +7,42 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline'"
     />
-    <link href="../output.css" rel="stylesheet">
+    <link href="../output.css" rel="stylesheet" />
     <title>Menú principal</title>
   </head>
   <body class="flex flex-col bg-gray-700 m-auto pt-4 min-h-screen">
     <header class="flex justify-center pt-4">
       <nav class="text-white flex gap-4 flex-row">
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./partners.html">Socios</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./receipts.html">Recibos</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./deaths.html">Defunciones</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./tariffs.html">Tarifas</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./about.html">Acerca de</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./index.html">Salir</a>
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./partners.html"
+          >Socios</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./receipts.html"
+          >Recibos</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./deaths.html"
+          >Defunciones</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./tariffs.html"
+          >Tarifas</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./about.html"
+          >Acerca de</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./index.html"
+          >Salir</a
+        >
       </nav>
     </header>
 
@@ -26,9 +50,16 @@
       <div class="grid grid-cols-2 gap-4">
         <img src="../assets/meme.jpg" alt="meme" />
         <div class="flex justify-center items-center flex-col">
-          <span class="text-white text-lg font-bold pb-5 text-center">Hora del sistema</span>
-          <span id="systemTime" class="text-white text-lg font-bold pb-4"></span>
-          <span class="text-white text-lg font-bold pb-5 text-center">Fecha del sistema</span>
+          <span class="text-white text-lg font-bold pb-5 text-center"
+            >Hora del sistema</span
+          >
+          <span
+            id="systemTime"
+            class="text-white text-lg font-bold pb-4"
+          ></span>
+          <span class="text-white text-lg font-bold pb-5 text-center"
+            >Fecha del sistema</span
+          >
           <span id="systemDate" class="text-white text-lg font-bold"></span>
         </div>
       </div>
