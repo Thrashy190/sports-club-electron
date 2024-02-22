@@ -1,0 +1,21 @@
+{
+  "name": "sport-club-electron",
+  "version": "1.0.0",
+  "description": "Sport club app",
+  "main": "./main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "thrashy",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.2.3"
+  },
+  "dependencies": {
+    "electron": "^28.2.3",
+    "electron-reload": "^2.0.0-alpha.1",
+    "mysql": "^2.18.1",
+    "promise-mysql": "^5.2.0"
+  }
+}
