@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
-const { getUsers } = require("./connection/functions");
+const { getUsers } = require("./src/connection/functions");
 
 require("./src/connection/database");
 require("electron-reload")(__dirname);
