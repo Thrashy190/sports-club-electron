@@ -1,33 +1,55 @@
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
-const { getUsers } = require("./src/connection/functions");
+const { getUsers, getUsersByUser } = require("./src/connection/functions");
+const { LanguageServiceMode } = require("typescript");
 
-require("./src/connection/database");
-require("electron-reload")(__dirname);
+let mainWindow;
 
-const createWindow = () => {
-  const win = new BrowserWindow({
+ipcMain.on("login", (event, data) => {
+  getUsersByUser(data.user).then((res) => {
+    console.log(res);
+    if (res.length > 0) {
+      if (res[0].password === data.password) {
+        openHome();
+      } else {
+        console.log("Contraseña incorrecta");
+      }
+    }
+  });
+});
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
     width: 1080,
     height: 720,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+}
 
-  win.loadFile("./src/views/index.html");
-};
+function openIndex() {
+  mainWindow.loadFile("./src/views/index.html");
+}
+
+function openHome() {
+  mainWindow.loadFile("./src/views/menu.html");
+}
 
 app.whenReady().then(() => {
-  ipcMain.handle("ping", () => "pong");
-  ipcMain.handle("get-users", async () => {
-    return await getUsers();
-  });
-  createWindow();
+  // ipcMain.handle("ping", () => "pong");
+  // ipcMain.handle("get-users", async () => {
+  //   return await getUsers();
+  // });
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+  createWindow();
+  openIndex();
+  console.log("app is ready");
+
+  app.on("activate", function () {
+    // On macOS it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 

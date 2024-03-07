@@ -18,35 +18,30 @@
     <div class="grid grid-cols-2 gap-4">
       <div><img src="./../assets/user-icon.png" alt="User Icon" /></div>
       <div class="flex justify-center items-center flex-col">
-        <form action="">
-          <div class="pb-5 flex flex-row gap-2">
-            <label class="text-white text-lg" for="user">Usuario</label>
-            <input type="text" id="user" />
-          </div>
-          <div class="pb-5 flex flex-row gap-2">
-            <label class="text-white text-lg" for="password">Contraseña</label>
-            <input type="password" id="password" />
-          </div>
-          <div class="flex gap-6 flex-row">
-            <button
-              id="login"
-              class="px-4 py-2 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"
-            >
-              Ingresar
-            </button>
-            <button
-              id="cancel"
-              class="px-4 py-2 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+        <div class="pb-5 flex flex-row gap-2">
+          <label class="text-white text-lg" for="user">Usuario</label>
+          <input type="text" id="user" />
+        </div>
+        <div class="pb-5 flex flex-row gap-2">
+          <label class="text-white text-lg" for="password">Contraseña</label>
+          <input type="password" id="password" />
+        </div>
+        <div class="flex gap-6 flex-row">
+          <button
+            id="login"
+            class="px-4 py-2 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"
+          >
+            Ingresar
+          </button>
+          <button
+            id="cancel"
+            class="px-4 py-2 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
     </div>
-    <div>
-      <p id="products"></p>
-    </div>
+    <script src="./renderer.js"></script>
   </body>
-  <script src="./renderer.js"></script>
 </html>
