@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
 const { getUsers, getUsersByUser } = require("./src/connection/functions");
-const { LanguageServiceMode } = require("typescript");
 
 let mainWindow;
 
