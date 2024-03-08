@@ -5,4 +5,7 @@ contextBridge.exposeInMainWorld("electron", {
   getUsers: () => ipcRenderer.invoke("get-users"),
   setTitle: (title) => ipcRenderer.send("set-title", title),
   loginIpc: (data) => ipcRenderer.send("login", data),
+  getPartner: (id) => ipcRenderer.invoke("get-partner", id),
+  getTariffs: (type) => ipcRenderer.invoke("get-tariffs", type),
+  addTariff: (data) => ipcRenderer.invoke("add-tariff", data),
 });

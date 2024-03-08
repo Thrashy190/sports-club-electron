@@ -4,7 +4,7 @@ const { getConnection } = require("./database");
 
 const getUsers = async () => {
   const conn = await getConnection();
-  conn.query("SELECT * FROM users").then((results) => {
+  const results = conn.query("SELECT * FROM users").then((results) => {
     return results;
   });
   return results;
@@ -21,22 +21,14 @@ const getUsersByUser = async (user) => {
 // ---------------------------------------------- SOCIOS ---------------------------------------------------
 
 // Función para obtener datos del socio
-async function getSocio(numeroSocio) {
+async function getSocio(partner_id) {
   const conn = await getConnection();
 
-  return new Promise((resolve, reject) => {
-    conn.query(
-      "SELECT * FROM partners WHERE partner_id = ?",
-      [numeroSocio],
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results[0]);
-        }
-      }
-    );
-  });
+  const results = await conn.query(
+    "SELECT * FROM partners WHERE partner_id = ?",
+    [partner_id]
+  );
+  return results;
 }
 
 async function getSocios() {
@@ -70,50 +62,27 @@ async function getSocios() {
 
 // ---------------------------------------------- TARIFAS ---------------------------------------------------
 
-async function getTarifas() {
+async function getTarifas(type) {
   const conn = await getConnection();
 
-  return new Promise((resolve, reject) => {
-    conn.query("SELECT * FROM tarifas", (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
+  const results = await conn.query(
+    "SELECT * FROM tariffs WHERE tariff_type = ?",
+    [type]
+  );
+
+  return results;
 }
 
-async function getTarifas() {
+async function addTarifa(data) {
+  const { tariff_type, concept, amount } = data;
   const conn = await getConnection();
 
-  return new Promise((resolve, reject) => {
-    conn.query(`SELECT * FROM tarifas `, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
-}
+  const results = await conn.query(
+    "INSERT INTO tariffs (tariff_type, concept, amount) VALUES (?, ?, ?)",
+    [tariff_type, concept, amount]
+  );
 
-async function registrarTarifa(tariff_type, concept, amount) {
-  const conn = await getConnection();
-
-  return new Promise((resolve, reject) => {
-    conn.query(
-      "INSERT INTO tarifas (tariff_type, concept, amount) VALUES (?, ?, ?)",
-      [tariff_type, concept, amount],
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
+  return results;
 }
 
 async function actualizarTarifa(
@@ -259,4 +228,6 @@ module.exports = {
   registrarDefuncion,
   getSocio,
   getSocios,
+  getTarifas,
+  addTarifa,
 };

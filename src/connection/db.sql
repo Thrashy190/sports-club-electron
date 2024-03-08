@@ -18,7 +18,6 @@ CREATE TABLE partners(
 	date_entry DATETIME,
 	date_reentry DATETIME,
 	date_change DATETIME,
-    status BOOLEAN,
 	PRIMARY KEY (partner_id)
 );
 

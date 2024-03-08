@@ -49,47 +49,133 @@
       </nav>
     </header>
 
-    <main class="px-6 pt-10">
+    <main class="flex gap-10 flex-col px-6 pt-10">
+      <h1 class="text-center text-2xl font-semibold">Tarifas</h1>
       <div class="flex flex-row gap-4">
         <select id="opcion" onchange="mostrarFormulario()">
+          <option value="">Selecciona</option>
           <option value="casa">Casa club</option>
           <option value="ayuda">Ayuda mutua</option>
         </select>
       </div>
-      <div>
-        <div id="formcasa" class="formulario">
-          <span>Casa club</span>
-          <input type="text" />
-          <input type="number" />
-          <button>Agregar tarifa</button>
-          <button>Actualizar tarifa</button>
-          <div></div>
+      <div class="">
+        <div id="formCasa" class="hidden formulario flex flex-col gap-7">
+          <span class="text-white">Casa club</span>
+          <div>
+            <label for="concept" class="text-white ps-3"> Concepto: </label>
+            <input type="text" id="concept" />
+            <label for="money" class="text-white ps-3"> Monto: </label>
+            <input type="number" id="money" />
+          </div>
+
+          <button
+            type="button"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Agregar tarifa
+          </button>
+
+          <button
+            type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+          >
+            Actualizar tarifa
+          </button>
         </div>
-        <div id="formayuda" class="formulario hidden">
-          <span>Ayuda mutua</span>
-          <input type="text" />
-          <input type="number" />
-          <button>Agregar tarifa</button>
-          <button>Actualizar tarifa</button>
-          <div></div>
+        <div id="formAyuda" class="formulario hidden flex flex-col gap-7">
+          <span class="text-white">Ayuda mutua</span>
+          <div>
+            <label for="concept" class="text-white ps-3"> Concepto: </label>
+            <input type="text" id="concept" />
+            <label for="money" class="text-white ps-3"> Monto: </label>
+            <input type="number" id="money" />
+          </div>
+          <button
+            type="button"
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Agregar tarifa
+          </button>
+
+          <button
+            type="button"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+          >
+            Actualizar tarifa
+          </button>
         </div>
+
+        <table
+          class="mt-10 gap-6 flex justify-center items-center flex-col border border-gray-400 p-4"
+        >
+          <thead>
+            <tr class="flex gap-10">
+              <th>Concept</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="table"></tbody>
+        </table>
       </div>
     </main>
   </body>
   <script>
-    function mostrarFormulario() {
+    async function mostrarFormulario() {
       const opcionSeleccionada = document.getElementById("opcion").value;
 
-      const formularios = document.querySelectorAll("formulario");
+      const formularios = document.querySelectorAll(".formulario");
       formularios.forEach((formulario) => {
         formulario.classList.add("hidden");
       });
 
       const formularioMostrar = document.getElementById(
-        `form${opcionSeleccionada}`
+        `form${opcionSeleccionada.charAt(0).toUpperCase() + opcionSeleccionada.slice(1)}`
       );
+
+      const list = document.getElementById("table");
+
+      const result = await window.electron.getTariffs(
+        opcionSeleccionada == "casa" ? 1 : 2
+      );
+      console.log(result);
+      list.innerHTML = "";
+      result.forEach((t) => {
+        list.innerHTML += `
+            <tr class="flex gap-10">
+              <td>${t.concept}</td>
+              <td>${t.amount}</td>
+            </tr>
+            `;
+      });
 
       formularioMostrar.classList.remove("hidden");
     }
+
+    async function addTarrif() {
+      const concept = document.getElementById("concept").value;
+      const money = document.getElementById("money").value;
+      const option = document.getElementById("opcion").value;
+
+      const result = await window.electron.addTariff({
+        concept: concept,
+        amount: money,
+        tariff_type: option == "casa" ? 1 : 2,
+      });
+
+      const list = document.getElementById("table");
+
+      list.innerHTML += `
+            <tr class="flex gap-10">
+              <td>${concept}</td>
+              <td>${money}</td>
+            </tr>
+            `;
+
+      console.log(result);
+    }
+
+    document
+      .getElementById("opcion")
+      .addEventListener("change", mostrarFormulario);
   </script>
 </html>

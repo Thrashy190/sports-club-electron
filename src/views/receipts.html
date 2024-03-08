@@ -1,134 +1,214 @@
 <!doctype html>
 <html>
   <head>
-    <meta charset="UTF-8" />  
-    
+    <meta charset="UTF-8" />
+
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self' 'unsafe-inline'"
     />
-    <link href="../output.css" rel="stylesheet">
-
+    <link href="../output.css" rel="stylesheet" />
 
     <title>Recibos</title>
   </head>
   <body class="flex flex-col bg-gray-700 m-auto pt-4 min-h-screen">
     <header class="flex justify-center pt-4">
       <nav class="text-white flex gap-4 flex-row">
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./partners.html">Socios</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./receipts.html">Recibos</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./deaths.html">Defunciones</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./tariffs.html">Tarifas</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./about.html">Acerca de</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./index.html">Salir</a>
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./partners.html"
+          >Socios</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./receipts.html"
+          >Recibos</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./deaths.html"
+          >Defunciones</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./tariffs.html"
+          >Tarifas</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./about.html"
+          >Acerca de</a
+        >
+        <a
+          class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400"
+          href="./index.html"
+          >Salir</a
+        >
       </nav>
     </header>
 
-    <br>
+    <br />
     <!-- Título del formulario -->
-    <h1 class="text-center text-2xl font-semibold">Expedición de Recibos de Pago</h1>
-    <br>
-    
+    <h1 class="text-center text-2xl font-semibold">
+      Expedición de Recibos de Pago
+    </h1>
+    <br />
+
     <!-- Formulario -->
-    <form action="/ruta-de-procesamiento" method="post" class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
+    <form
+      action="/ruta-de-procesamiento"
+      method="post"
+      class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
+    >
       <div class="mb-2 max-w-xs">
-        <label for="buscar_socio" class="block text-sm">Buscar Socio por ID o Nombre:</label>
-        <input type="text" id="buscar_socio" class="w-full px-2 py-1 leading-tight border rounded-lg shadow-sm focus:outline-none focus:shadow-outline-gray text-sm" placeholder="Buscar">
-    </div>
-    
-    <!-- Función para manejar la búsqueda -->
-    <script>
-        document.getElementById('buscar_socio').addEventListener('input', function() {
-            var termino = this.value.trim().toLowerCase();
-            var socios = document.querySelectorAll('.socio');
-    
-            socios.forEach(function(socio) {
-                var id = socio.getAttribute('data-id').toLowerCase();
-                var nombre = socio.getAttribute('data-nombre').toLowerCase();
-                
-                // Mostrar o ocultar el socio según el término de búsqueda
-                if (id.includes(termino) || nombre.includes(termino)) {
-                    socio.style.display = 'block';
-                } else {
-                    socio.style.display = 'none';
-                }
-            });
-        });
-    </script>
-      <br>
+        <label for="buscar_socio" class="block text-sm">
+          Buscar Socio por ID o Nombre:
+        </label>
+        <input
+          type="text"
+          id="buscar_socio"
+          class="w-full px-2 py-1 leading-tight border rounded-lg shadow-sm focus:outline-none focus:shadow-outline-gray text-sm"
+          placeholder="Buscar"
+        />
+      </div>
 
+      <!-- Función para manejar la búsqueda -->
+      <script>
+        document
+          .getElementById("buscar_socio")
+          .addEventListener("input", async function () {
+            let termino = this.value.trim();
 
-        <!-- Mostrar datos generales y adeudo -->
+            const result = await window.electron.getPartner(termino);
+            console.log(result[0].name);
 
+            if (result) {
+              document.getElementById("nombre_socio_mostrar").textContent =
+                result[0].name;
+              document.getElementById("numero_socio_mostrar").textContent =
+                result[0].partner_id;
+            }
+          });
+      </script>
+      <br />
 
-        <!-- Sección de datos generales y adeudo del socio -->
-        <div class="mb-4">
-        <h2 class="text-lg font-semibold mb-2">Datos Generales y Adeudo del Socio</h2>
+      <!-- Mostrar datos generales y adeudo -->
+
+      <!-- Sección de datos generales y adeudo del socio -->
+      <div class="mb-4">
+        <h2 class="text-lg font-semibold mb-2">
+          Datos Generales y Adeudo del Socio
+        </h2>
         <!-- Aquí puedes mostrar los datos generales y el adeudo del socio obtenidos de la base de datos -->
-        
+
         <div class="mb-2">
           <label for="nombre_socio_mostrar" class="block">Nombre:</label>
-            <p id="nombre_socio_mostrar"></p>
+          <p id="nombre_socio_mostrar"></p>
         </div>
         <div class="mb-2">
-          <label for="numero_socio_mostrar" class="block">Número de Socio:</label>
-            <p id="numero_socio_mostrar"></p>
+          <label for="numero_socio_mostrar" class="block">
+            Número de Socio:
+          </label>
+          <p id="numero_socio_mostrar"></p>
         </div>
         <div class="mb-2">
           <label for="adeudo_casa_club" class="block">Adeudo Casa Club:</label>
-            <p id="adeudo_casa_club"></p>
-          </div>
+          <p id="adeudo_casa_club"></p>
+        </div>
         <div class="mb-2">
-          <label for="adeudo_ayuda_mutua" class="block">Adeudo Ayuda Mutua:</label>
-            <p id="adeudo_ayuda_mutua"></p>
+          <label for="adeudo_ayuda_mutua" class="block">
+            Adeudo Ayuda Mutua:
+          </label>
+          <p id="adeudo_ayuda_mutua"></p>
         </div>
-        </div>
+      </div>
 
-        <!-- Resto del formulario -->
-        <!-- Pestañas para Casa Club y Ayuda Mutua -->
-        <!-- Conceptos de pago -->
-<!-- Botones de acción -->
-<div class="flex justify-center">
-  <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Guardar</button>
-  <button type="button" onclick="cerrarFormulario()" class="ml-2 bg-gray-300 px-4 py-2 rounded">Cerrar</button>
-</div>
-        
-        <!-- Pestañas para Casa Club y Ayuda Mutua -->
-        <div class="flex justify-center"> <!-- Alineación de pestañas -->
-            <label class="block">Selecciona una categoría:</label>
-            <input type="radio" id="categoria_invitado" name="categoria" value="invitado" class="mx-2"> <!-- Espaciado horizontal -->
-            <label for="categoria_invitado">Invitado</label>
-            <input type="radio" id="categoria_socio" name="categoria" value="socio" class="mx-2"> <!-- Espaciado horizontal -->
-            <label for="categoria_socio">Socio</label>
-        </div>
-        
-        <!-- Conceptos de pago -->
-        <div>
-            <label class="block">Conceptos de pago:</label>
-            <!-- Aquí puedes listar los conceptos y sus precios unitarios -->
-            <!-- Por ejemplo: -->
-            <input type="checkbox" id="casa_club" name="concepto" value="casa_club">
-            <label for="casa_club">Casa Club</label>
-            <br>
-            <input type="checkbox" id="ayuda_mutua" name="concepto" value="ayuda_mutua">
-            <label for="ayuda_mutua">Ayuda Mutua</label>
-        </div>
-        
-        <!-- Botones de acción -->
-        <div class="flex justify-center"> <!-- Alineación de botones -->
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Guardar</button>
-            <button type="button" onclick="cerrarFormulario()" class="ml-2 bg-gray-300 px-4 py-2 rounded">Cerrar</button>
-        </div>
+      <!-- Resto del formulario -->
+      <!-- Pestañas para Casa Club y Ayuda Mutua -->
+      <!-- Conceptos de pago -->
+      <!-- Botones de acción -->
+      <div class="flex justify-center">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+          Guardar
+        </button>
+        <button
+          type="button"
+          onclick="cerrarFormulario()"
+          class="ml-2 bg-gray-300 px-4 py-2 rounded"
+        >
+          Cerrar
+        </button>
+      </div>
+
+      <!-- Pestañas para Casa Club y Ayuda Mutua -->
+      <div class="flex justify-center">
+        <!-- Alineación de pestañas -->
+        <label class="block">Selecciona una categoría:</label>
+        <input
+          type="radio"
+          id="categoria_invitado"
+          name="categoria"
+          value="invitado"
+          class="mx-2"
+        />
+        <!-- Espaciado horizontal -->
+        <label for="categoria_invitado">Invitado</label>
+        <input
+          type="radio"
+          id="categoria_socio"
+          name="categoria"
+          value="socio"
+          class="mx-2"
+        />
+        <!-- Espaciado horizontal -->
+        <label for="categoria_socio">Socio</label>
+      </div>
+
+      <!-- Conceptos de pago -->
+      <div>
+        <label class="block">Conceptos de pago:</label>
+        <!-- Aquí puedes listar los conceptos y sus precios unitarios -->
+        <!-- Por ejemplo: -->
+        <input
+          type="checkbox"
+          id="casa_club"
+          name="concepto"
+          value="casa_club"
+        />
+        <label for="casa_club">Casa Club</label>
+        <br />
+        <input
+          type="checkbox"
+          id="ayuda_mutua"
+          name="concepto"
+          value="ayuda_mutua"
+        />
+        <label for="ayuda_mutua">Ayuda Mutua</label>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex justify-center">
+        <!-- Alineación de botones -->
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+          Guardar
+        </button>
+        <button
+          type="button"
+          onclick="cerrarFormulario()"
+          class="ml-2 bg-gray-300 px-4 py-2 rounded"
+        >
+          Cerrar
+        </button>
+      </div>
     </form>
 
     <!-- Función para cerrar el formulario -->
     <script>
-        function cerrarFormulario() {
-            // Aquí puedes agregar la lógica para cerrar el formulario
-            // Por ejemplo, ocultar el formulario o redirigir a otra página
-        }
+      function cerrarFormulario() {
+        // Aquí puedes agregar la lógica para cerrar el formulario
+        // Por ejemplo, ocultar el formulario o redirigir a otra página
+      }
     </script>
-    <script src="../../renderer.js"></script>
   </body>
 </html>
