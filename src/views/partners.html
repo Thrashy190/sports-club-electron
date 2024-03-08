@@ -9,21 +9,191 @@
     />
     <link href="../output.css" rel="stylesheet">
     <title>Socios</title>
+
+    <script>
+      function mostrarFormulario() {
+        const opcionSeleccionada = document.getElementById('opcion').value;
+
+        const formularios = document.querySelectorAll('.formulario');
+        formularios.forEach(formulario => {
+          formulario.classList.add('hidden');
+        });
+
+        const formularioMostrar = document.getElementById(`form${opcionSeleccionada.charAt(0).toUpperCase() + opcionSeleccionada.slice(1)}`);
+        
+        formularioMostrar.classList.remove('hidden');
+      }
+
+      function mostrarFormReingreso(){
+        const form = document.getElementById('reingreso');
+        
+        const button = document.getElementById('search');
+
+        button.addEventListener('click', form.classList.remove('hidden'))
+      }
+
+      function mostrarFormCategoria(){
+        const form = document.getElementById('category');
+        
+        const button = document.getElementById('searchCategory');
+
+        button.addEventListener('click', form.classList.remove('hidden'))
+      }
+    </script>
+
   </head>
-  <body class="flex flex-col bg-gray-700 m-auto pt-4 min-h-screen">
-    <header class="flex justify-center pt-4">
-      <nav class="text-white flex gap-4 flex-row">
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./partners.html">Socios</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./receipts.html">Recibos</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./deaths.html">Defunciones</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./tariffs.html">Tarifas</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./about.html">Acerca de</a>
-        <a class="text-lg px-4 transition hover:text-yellow-500 dark:hover:text-yellow-400" href="./index.html">Salir</a>
-      </nav>
+  <body class="flex flex-col justify-center items-center bg-gray-700">
+    <header class="flex justify-between items-center  px-6 pt-10 pb-4">
+      <h1 class="text-3xl text-white">Socio del Club</h1>
     </header>
 
     <main class="px-6 pt-10">
+
+      <div class="px-20">
+        <label for="opcion" class="text-white text-2xl pe-2">Formularios:</label>
+        <select id="opcion" onchange="mostrarFormulario()" class="text-2xl ">
+            <option value="">Selecciona</option>
+            <option value="nuevoIngreso">Nuevo Ingreso</option>
+            <option value="reingreso">Reingreso</option>
+            <option value="cambiarCategoria">Cambiar de Categoría</option>
+            <option value="padronSocios">Padrón de Socios</option>
+        </select>
+      </div>
+
+      <div id="formNuevoIngreso" class="formulario hidden">
+        <div class="text-black text-2xl text- flex flex-col py-8 px-20">
+          
+          <label for="opcion" class="text-white text-2xl pe-2">Tipo de ingreso:</label>
+          <select id="opcion" onchange="" class="text-2xl text-black">
+              <option value="">Selecciona</option>
+              <option value="">Socio</option>
+              <option value="">Invitado</option>
+          </select>
+
+          <label class="text-white py-2" for="">Nombre:</label>
+          <input class="ps-2" type="text" name="name" placeholder="Nombre">
+  
+          <label class="text-white py-2" for="">CURP:</label>
+          <input class="ps-2" type="text" name="curp" placeholder="CURP">
+          
+          <label class="text-white py-2" for="">Dirección:</label>
+          <input class="ps-2" type="text" name="address" placeholder="Dirección">
+          
+          <label class="text-white py-2" for="">Teléfono:</label>
+          <input class="ps-2" type="tel" name="phone" placeholder="Teléfono">
+          
+          <label class="text-white py-2" for="">Correo electrónico:</label>
+          <input class="ps-2" type="email" name="email" placeholder="Correo electrónico">
+
+          <button id="savePartner" onclick="" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar</button>         
+  
+        </div>
+        
+      </div>
+
+      <div id="formReingreso" class="formulario hidden">
+        <div class="text-black text-2xl flex flex-col py-8 px-20">
+
+          <div class="flex flex-row items-end">
+            <div class="flex flex-col pe-2">
+              <label class="text-white py-2" for="">Buscar por numero de socio:</label>
+              <input class="ps-2" type="text" name="name" placeholder="#Socio">
+            </div>
+            
+            <button id="search" onclick="mostrarFormReingreso()" class="px-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Buscar</button>         
+          </div>
+
+          <div id="reingreso" class="hidden flex flex-col">
+            <label class="text-white py-2" for="">Categoría:</label>
+            <label class="text-black py-2 bg-white ps-2 h-8 items-center"></label>
+
+            <label class="text-white py-2" for="">Nombre:</label>
+            <label class="text-black py-2 bg-white ps-2 h-8"></label>
+
+            <label class="text-white py-2" for="">CURP:</label>
+            <input class="ps-2" type="text" name="curp" placeholder="CURP">
+
+            <label class="text-white py-2" for="">Dirección:</label>
+            <input class="ps-2" type="text" name="address" placeholder="Dirección">
+
+            <label class="text-white py-2" for="">Teléfono:</label>
+            <input class="ps-2" type="tel" name="phone" placeholder="Teléfono">
+
+            <label class="text-white py-2" for="">Correo electrónico:</label>
+            <input class="ps-2" type="email" name="email" placeholder="Correo electrónico">
+  
+            <button id="updateCategory" onclick="" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar reingreso</button>         
+          </div>
+        </div>
+      </div>
+      <!-- Al momento de guardar en el formulario de registro se genera un monto especificado en la seccion de Tarifas -->
+
+      <div id="formCambiarCategoria" class="formulario hidden">
+        <div class="text-black text-2xl flex flex-col py-8 px-20">
+
+          <div class="flex flex-row items-end">
+            <div class="flex flex-col pe-2">
+              <label class="text-white py-2" for="">Buscar por numero de socio:</label>
+              <input class="ps-2" type="text" name="name" placeholder="#Socio">
+            </div>
+            
+            <button id="searchCategory" onclick="mostrarFormCategoria()" class="px-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Buscar</button>         
+          </div>
+
+          <div id="category" class="hidden flex flex-col">
+            <label for="opcion" class="text-white text-2xl pt-4">Categoria:</label>
+            <select id="opcion" onchange="" class="text-2xl text-black">
+                <option value="">Socio</option>
+                <option value="">Invitado</option>
+            </select>
+
+            <label class="text-white py-2" for="">Nombre:</label>
+            <span class="text-black py-2 bg-white ps-2 h-8"></span>
+
+            <label class="text-white py-2" for="">CURP:</label>
+            <span class="text-black py-2 bg-white ps-2 h-8"></span>
+
+            <label class="text-white py-2" for="">Dirección:</label>
+            <span class="text-black py-2 bg-white ps-2 h-8"></span>
+
+            <label class="text-white py-2" for="">Teléfono:</label>
+            <span class="text-black py-2 bg-white ps-2 h-8"></span>
+
+            <label class="text-white py-2" for="">Correo electrónico:</label>
+            <span class="text-black py-2 bg-white ps-2 h-8"></span>
+  
+            <button id="updateCategory" onclick="" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Actualizar Categoria</button>         
+          </div>
+          
+  
+        </div>
+      </div>
+
+      <div id="formPadronSocios" class="formulario hidden">
+        <div class="text-black text-2xl flex flex-col justify-center items-center py-8 px-20">
+          <table class="text-white">
+            <thead>
+              <tr>
+                <th># Socio</th>
+                <th>Nombre</th>
+                <th>CURP</th>
+                <th>Edad actual</th>
+                <th>Teléfono</th>
+                <th>Categoria</th>
+                <th>Estatus</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <a href="./menu.html" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"">Cerrar</a>
       
     </main>
+
   </body>
 </html>
