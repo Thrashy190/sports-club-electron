@@ -52,18 +52,62 @@
       </nav>
     </header>
 
-    <main class="px-6 pt-10">
-      <div class="grid grid-cols-2 gap-4">
-        <img src="../assets/meme.jpg" alt="meme" />
+    <script>
+      setInterval(showTime, 1000);
+      setInterval(showDate, 1000);
+
+      function showTime(){
+        let time = new Date();
+        let hour = time.getHours();
+        let min = time.getMinutes();
+        let sec = time.getSeconds();
+        let am_pm = "AM";
+
+        if(hour >= 12){
+          if(hour > 12) hour -= 12;
+          am_pm = "PM";
+        }else if(hour == 0){
+          hour = 12;
+          am_pm = "AM";
+        }
+
+        hour =
+        hour < 10 ? "0" + hour : hour;
+        min = min < 10 ? "0" + min : min;
+        sec = sec < 10 ? "0" + sec : sec;
+    
+        let currentTime = hour + ":" + min + ":" + sec + am_pm;
+    
+        document.getElementById("systemTime").innerHTML = currentTime;
+      }
+
+      function showDate(){
+        let date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+    
+        day = day < 10 ? "0" + day : day;
+        month = month < 10 ? "0" + month : month;
+    
+        let currentDate = day + "/" + month + "/" + year;
+    
+        document.getElementById("systemDate").innerHTML = currentDate;
+      }
+    </script>
+
+    <main class="px-6 py-32">
+      <div class="flex flex-row gap-28 justify-center items-center">
+        <img src="../assets/tec.webp" alt="Tec image" class="aspect-auto w-1/2" />
         <div class="flex justify-center items-center flex-col">
-          <span class="text-white text-lg font-bold pb-5 text-center">
+          <span class="text-white text-lg font-bold pb-2 text-center">
             Hora del sistema
           </span>
           <span
             id="systemTime"
-            class="text-white text-lg font-bold pb-4"
+            class="text-white text-lg font-bold pb-5"
           ></span>
-          <span class="text-white text-lg font-bold pb-5 text-center">
+          <span class="text-white text-lg font-bold pb-2 text-center">
             Fecha del sistema
           </span>
           <span id="systemDate" class="text-white text-lg font-bold"></span>
