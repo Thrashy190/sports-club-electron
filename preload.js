@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld("electron", {
   setTitle: (title) => ipcRenderer.send("set-title", title),
   loginIpc: (data) => ipcRenderer.send("login", data),
   getPartner: (id) => ipcRenderer.invoke("get-partner", id),
+  createPartner: (data) => ipcRenderer.send("create-partner", data),
   getTariffs: (type) => ipcRenderer.invoke("get-tariffs", type),
   addTariff: (data) => ipcRenderer.invoke("add-tariff", data),
+  getStatement : (id) => ipcRenderer.send("get-statement", id),
 });

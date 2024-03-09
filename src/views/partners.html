@@ -63,29 +63,28 @@
       <div id="formNuevoIngreso" class="formulario hidden">
         <div class="text-black text-2xl text- flex flex-col py-8 px-20">
           
-          <label for="opcion" class="text-white text-2xl pe-2">Tipo de ingreso:</label>
-          <select id="opcion" onchange="" class="text-2xl text-black">
-              <option value="">Selecciona</option>
-              <option value="">Socio</option>
-              <option value="">Invitado</option>
+          <label for="partnerType" class="text-white text-2xl pe-2">Tipo de ingreso:</label>
+          <select id="partnerType" onchange="" class="text-2xl text-black">
+              <option value="0">Socio</option>
+              <option value="1">Invitado</option>
           </select>
 
           <label class="text-white py-2" for="">Nombre:</label>
-          <input class="ps-2" type="text" name="name" placeholder="Nombre">
+          <input class="ps-2" type="text" id="name" placeholder="Nombre">
   
           <label class="text-white py-2" for="">CURP:</label>
-          <input class="ps-2" type="text" name="curp" placeholder="CURP">
+          <input class="ps-2" type="text" id="curp" placeholder="CURP">
           
           <label class="text-white py-2" for="">Dirección:</label>
-          <input class="ps-2" type="text" name="address" placeholder="Dirección">
+          <input class="ps-2" type="text" id="address" placeholder="Dirección">
           
           <label class="text-white py-2" for="">Teléfono:</label>
-          <input class="ps-2" type="tel" name="phone" placeholder="Teléfono">
+          <input class="ps-2" type="tel" id="phone" placeholder="Teléfono">
           
           <label class="text-white py-2" for="">Correo electrónico:</label>
-          <input class="ps-2" type="email" name="email" placeholder="Correo electrónico">
+          <input class="ps-2" type="email" id="email" placeholder="Correo electrónico">
 
-          <button id="savePartner" onclick="" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar</button>         
+          <button id="savePartner" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar</button>         
   
         </div>
         
@@ -194,6 +193,28 @@
       <a href="./menu.html" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg"">Cerrar</a>
       
     </main>
+
+    <script>
+      document.getElementById("savePartner").addEventListener("click", () => {
+        const name = document.getElementById("name").value;
+        const curp = document.getElementById("curp").value;
+        const address = document.getElementById("address").value;
+        const phone = document.getElementById("phone").value;
+        const email = document.getElementById("email").value;
+        const type = document.getElementById("partnerType").value;
+
+        const partner = {
+          name: name,
+          curp: curp,
+          address: address,
+          phone: phone,
+          email: email,
+          type: type
+        };
+
+        window.electron.createPartner(partner);
+      });
+    </script>
 
   </body>
 </html>

@@ -16,6 +16,8 @@
   "dependencies": {
     "electron": "^28.2.3",
     "electron-reload": "^2.0.0-alpha.1",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "mysql": "^2.18.1",
     "promise-mysql": "^5.2.0"
   }

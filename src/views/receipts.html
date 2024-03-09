@@ -56,9 +56,7 @@
     <br />
 
     <!-- Formulario -->
-    <form
-      action="/ruta-de-procesamiento"
-      method="post"
+    <div
       class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
     >
       <div class="mb-2 max-w-xs">
@@ -91,6 +89,8 @@
             }
           });
       </script>
+
+      
       <br />
 
       <!-- Mostrar datos generales y adeudo -->
@@ -129,8 +129,8 @@
       <!-- Conceptos de pago -->
       <!-- Botones de acción -->
       <div class="flex justify-center">
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-          Guardar
+        <button id="generatePdf" class="bg-blue-500 text-white px-4 py-2 rounded">
+          Guardar pdf
         </button>
         <button
           type="button"
@@ -201,7 +201,7 @@
           Cerrar
         </button>
       </div>
-    </form>
+    </div>
 
     <!-- Función para cerrar el formulario -->
     <script>
@@ -209,6 +209,17 @@
         // Aquí puedes agregar la lógica para cerrar el formulario
         // Por ejemplo, ocultar el formulario o redirigir a otra página
       }
+    </script>
+
+    <!-- Funcion para generar el pdf -->
+    <script>
+      document.getElementById("generatePdf").addEventListener("click", () => {
+        const id = document.getElementById("buscar_socio").value;
+
+        console.log(id);
+        
+        window.electron.getStatement(id);
+      });
     </script>
   </body>
 </html>

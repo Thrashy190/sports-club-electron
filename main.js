@@ -4,8 +4,11 @@ const {
   getUsers,
   getUsersByUser,
   getSocio,
+  createPartner,
   getTarifas,
   addTarifa,
+  getPagosEfectuados,
+  generarEstadoCuenta,
 } = require("./src/connection/functions");
 
 let mainWindow;
@@ -22,6 +25,27 @@ ipcMain.on("login", (event, data) => {
     }
   });
 });
+
+ipcMain.on("create-partner", async (event, partner) => {
+  return await createPartner(
+    partner.name,
+    partner.address,
+    partner.phone,
+    partner.email,
+    partner.curp,
+    partner.type
+  );
+});
+
+ipcMain.on("get-statement", (event, id) => {
+  getSocio(id).then((res) => {
+    console.log(res[0].partner_id);
+    getPagosEfectuados(res[0].partner_id).then((pagos) => {
+      generarEstadoCuenta(pagos);
+    });
+  });
+});
+
 
 ipcMain.handle("get-partner", async (event, id) => {
   console.log("get-partner", id);
@@ -51,7 +75,7 @@ function createWindow() {
 }
 
 function openIndex() {
-  mainWindow.loadFile("./src/views/index.html");
+  mainWindow.loadFile("./src/views/receipts.html");
 }
 
 function openHome() {
