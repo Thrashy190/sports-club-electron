@@ -85,34 +85,18 @@ async function addTarifa(data) {
   return results;
 }
 
-async function actualizarTarifa(
-  tarifa_id,
-  tipo_tarifa,
-  concepto,
-  monto,
-  aplica_socios,
-  aplica_invitados
-) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      "UPDATE tarifas SET tipo_tarifa = ?, concepto = ?, monto = ?, aplica_socios = ?, aplica_invitados = ? WHERE tarifa_id = ?",
-      [
-        tipo_tarifa,
-        concepto,
-        monto,
-        aplica_socios,
-        aplica_invitados,
-        tarifa_id,
-      ],
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
+//updateTarifa
+
+async function updateTarifa(data) {
+  const { concept, amount } = data;
+  const conn = await getConnection();
+
+  const results = await conn.query(
+    "UPDATE tariffs SET  amount = ? WHERE concept = ?",
+    [amount, concept]
+  );
+
+  return results;
 }
 
 // ---------------------------------------------- RECIBOS ---------------------------------------------------
@@ -146,88 +130,61 @@ function generarRecibo(socio, fecha_pago, monto_total, detalle_pago) {
 
 // ---------------------------------------------- DEFUNCIONES ---------------------------------------------------
 
-// Función para registrar defunción
-function registrarDefuncion(
-  socio_id,
-  fecha_defuncion,
-  nombre_beneficiario,
-  monto
-) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      "INSERT INTO defunciones (socio_id, fecha_defuncion, nombre_beneficiario, monto) VALUES (?, ?, ?, ?)",
-      [socio_id, fecha_defuncion, nombre_beneficiario, monto],
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
+async function addDefuncion(data) {
+  const { partner_id, death_date, beneficiary, amount } = data;
+  const conn = await getConnection();
+  const results = await conn.query(
+    "INSERT INTO deaths (partner_id, date_death, beneficiary_name, death_amount) VALUES (?, ?, ?, ?)",
+    [partner_id, death_date, beneficiary, amount]
+  );
+  return results;
 }
 
-// Función para actualizar estado del socio
-function actualizarSocio(socio_id) {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      "UPDATE socios SET activo = 0 WHERE socio_id = ?",
-      [socio_id],
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
+async function getDefuncionesWithPayments() {
+  const conn = await getConnection();
+  const results = await conn.query(
+    `
+    SELECT 
+      s.socio_id, 
+      s.nombre, 
+      SUM(p.monto_final) AS monto_acumulado, 
+      d.fecha_defuncion, 
+      d.monto, 
+      d.nombre_beneficiario
+    FROM socios s
+    INNER JOIN defunciones d ON d.socio_id = s.socio_id
+    INNER JOIN pagos p ON p.socio_id = s.socio_id
+    GROUP BY s.socio_id, s.nombre, d.fecha_defuncion, d.monto, d.nombre_beneficiario
+  `
+  );
+  return results;
 }
 
-// Función para realizar cargo a los socios
-function realizarCargo(monto) {
-  // Implementar la lógica para realizar el cargo a los socios
-  // ...
-}
-
-// Función para obtener lista de socios fallecidos
-function getDefunciones() {
-  return new Promise((resolve, reject) => {
-    connection.query(
-      `
-      SELECT 
-        s.socio_id, 
-        s.nombre, 
-        s.fecha_nacimiento, 
-        SUM(p.monto_final) AS monto_acumulado, 
-        d.fecha_defuncion, 
-        d.monto, 
-        d.nombre_beneficiario
-      FROM socios s
-      INNER JOIN defunciones d ON d.socio_id = s.socio_id
-      INNER JOIN pagos p ON p.socio_id = s.socio_id
-      GROUP BY s.socio_id, s.nombre, s.fecha_nacimiento, d.fecha_defuncion, d.monto, d.nombre_beneficiario
-    `,
-      (err, results) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(results);
-        }
-      }
-    );
-  });
+async function getDefuncionesWithPartner() {
+  const conn = await getConnection();
+  const results = await conn.query(
+    `
+    SELECT 
+      p.partner_id, 
+      p.name, 
+      d.date_death, 
+      d.beneficiary_name, 
+      d.death_amount
+    FROM partners p
+    INNER JOIN deaths d ON d.partner_id = p.partner_id
+  `
+  );
+  return results;
 }
 
 module.exports = {
   getUsers,
   getUsersByUser,
-  getDefunciones,
-  actualizarSocio,
-  registrarDefuncion,
+  addDefuncion,
   getSocio,
   getSocios,
   getTarifas,
   addTarifa,
+  updateTarifa,
+  getDefuncionesWithPartner,
 };

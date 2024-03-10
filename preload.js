@@ -8,4 +8,7 @@ contextBridge.exposeInMainWorld("electron", {
   getPartner: (id) => ipcRenderer.invoke("get-partner", id),
   getTariffs: (type) => ipcRenderer.invoke("get-tariffs", type),
   addTariff: (data) => ipcRenderer.invoke("add-tariff", data),
+  updateTariff: (data) => ipcRenderer.invoke("update-tariff", data),
+  addDefuncion: (data) => ipcRenderer.invoke("add-defuncion", data),
+  getDefunciones: () => ipcRenderer.invoke("get-defunciones"),
 });

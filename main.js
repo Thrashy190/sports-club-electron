@@ -6,6 +6,9 @@ const {
   getSocio,
   getTarifas,
   addTarifa,
+  updateTarifa,
+  addDefuncion,
+  getDefuncionesWithPartner,
 } = require("./src/connection/functions");
 
 let mainWindow;
@@ -36,6 +39,21 @@ ipcMain.handle("get-tariffs", async (event, type) => {
 ipcMain.handle("add-tariff", async (event, data) => {
   console.log("add-tariff", data);
   return await addTarifa(data);
+});
+
+ipcMain.handle("update-tariff", async (event, data) => {
+  console.log("update-tariff", data);
+  return await updateTarifa(data);
+});
+
+ipcMain.handle("add-defuncion", async (event, data) => {
+  console.log("add-defuncion", data);
+  return await addDefuncion(data);
+});
+
+ipcMain.handle("get-defunciones", async (event) => {
+  console.log("get-defunciones");
+  return await getDefuncionesWithPartner();
 });
 
 ipcMain.handle("ping", () => "pong");
