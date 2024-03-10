@@ -56,9 +56,7 @@
     <br />
 
     <!-- Formulario -->
-    <div
-      class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
-    >
+    <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <div class="mb-2 max-w-xs">
         <label for="buscar_socio" class="block text-sm">
           Buscar Socio por ID o Nombre:
@@ -89,8 +87,6 @@
             }
           });
       </script>
-
-      
       <br />
 
       <!-- Mostrar datos generales y adeudo -->
@@ -123,13 +119,18 @@
           <p id="adeudo_ayuda_mutua"></p>
         </div>
       </div>
-
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Estado de cuenta
+      </button>
       <!-- Resto del formulario -->
       <!-- Pestañas para Casa Club y Ayuda Mutua -->
       <!-- Conceptos de pago -->
       <!-- Botones de acción -->
       <div class="flex justify-center">
-        <button id="generatePdf" class="bg-blue-500 text-white px-4 py-2 rounded">
+        <button
+          id="generatePdf"
+          class="bg-blue-500 text-white px-4 py-2 rounded"
+        >
           Guardar pdf
         </button>
         <button
@@ -140,53 +141,23 @@
           Cerrar
         </button>
       </div>
+      <select id="opcion" onchange="mostrarFormulario()">
+        <option value="casa">Casa club</option>
+        <option value="otro">Ayuda mutua</option>
+      </select>
 
-      <!-- Pestañas para Casa Club y Ayuda Mutua -->
-      <div class="flex justify-center">
-        <!-- Alineación de pestañas -->
-        <label class="block">Selecciona una categoría:</label>
-        <input
-          type="radio"
-          id="categoria_invitado"
-          name="categoria"
-          value="invitado"
-          class="mx-2"
-        />
-        <!-- Espaciado horizontal -->
-        <label for="categoria_invitado">Invitado</label>
-        <input
-          type="radio"
-          id="categoria_socio"
-          name="categoria"
-          value="socio"
-          class="mx-2"
-        />
-        <!-- Espaciado horizontal -->
-        <label for="categoria_socio">Socio</label>
-      </div>
+      <table id="table" border="1">
+        <thead>
+          <tr class="grid grid-cols-3">
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Seleccionar</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
 
-      <!-- Conceptos de pago -->
-      <div>
-        <label class="block">Conceptos de pago:</label>
-        <!-- Aquí puedes listar los conceptos y sus precios unitarios -->
-        <!-- Por ejemplo: -->
-        <input
-          type="checkbox"
-          id="casa_club"
-          name="concepto"
-          value="casa_club"
-        />
-        <label for="casa_club">Casa Club</label>
-        <br />
-        <input
-          type="checkbox"
-          id="ayuda_mutua"
-          name="concepto"
-          value="ayuda_mutua"
-        />
-        <label for="ayuda_mutua">Ayuda Mutua</label>
-      </div>
-
+      <p id="suma"></p>
       <!-- Botones de acción -->
       <div class="flex justify-center">
         <!-- Alineación de botones -->
@@ -206,8 +177,92 @@
     <!-- Función para cerrar el formulario -->
     <script>
       function cerrarFormulario() {
-        // Aquí puedes agregar la lógica para cerrar el formulario
-        // Por ejemplo, ocultar el formulario o redirigir a otra página
+        window.location.href = "./menu.html";
+      }
+    </script>
+
+    <script>
+      async function mostrarFormulario() {
+        const opcionSeleccionada = document.getElementById("opcion").value;
+
+        const formularios = document.querySelectorAll(".formulario");
+        formularios.forEach((formulario) => {
+          formulario.classList.add("hidden");
+        });
+
+        const formularioMostrar = document.getElementById(
+          `form${opcionSeleccionada.charAt(0).toUpperCase() + opcionSeleccionada.slice(1)}`
+        );
+
+        const list = document.querySelector("#table tbody");
+
+        const result = await window.electron.getTariffs(
+          opcionSeleccionada == "casa" ? 1 : 2
+        );
+        console.log(result);
+        list.innerHTML = "";
+        result.forEach((t) => {
+          const tr = document.createElement("tr");
+          tr.classList.add("grid", "grid-cols-3");
+
+          const td1 = document.createElement("td");
+          td1.textContent = t.concept;
+          tr.appendChild(td1);
+
+          const td2 = document.createElement("td");
+          td2.textContent = t.amount;
+          tr.appendChild(td2);
+
+          const td3 = document.createElement("td");
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.addEventListener("change", () => {
+            actualizarSuma();
+          });
+          td3.appendChild(checkbox);
+          tr.appendChild(td3);
+
+          list.appendChild(tr);
+        });
+
+        formularioMostrar.classList.remove("hidden");
+      }
+
+      function actualizarSuma() {
+        const checkboxes = document.querySelectorAll(
+          "#table input[type='checkbox']"
+        );
+        let suma = 0;
+        checkboxes.forEach((checkbox, index) => {
+          if (checkbox.checked) {
+            suma += parseInt(
+              document.querySelectorAll("#table td:nth-child(2)")[index]
+                .textContent
+            );
+          }
+        });
+        document.getElementById("suma").textContent =
+          `Suma de montos seleccionados: ${suma}`;
+      }
+
+      function guardar() {
+        const checkboxes = document.querySelectorAll(
+          "#table input[type='checkbox']:checked"
+        );
+
+        let paymentHasTariffsQuery = "";
+        checkboxes.forEach((checkbox, index) => {
+          const tr = checkbox.closest("tr");
+          const tariffId = tr.getAttribute("data-tariff-id");
+          if (index > 0) {
+            paymentHasTariffsQuery += ", ";
+          }
+          paymentHasTariffsQuery += `(${paymentId}, ${tariffId})`;
+        });
+        const paymentQuery = `INSERT INTO payments (payment_id, date_payment, amount, partner_id) VALUES (${paymentId}, NOW(), 'Monto_Total_Aqui', 'Partner_ID_Aqui');`;
+        const finalPaymentHasTariffsQuery = `INSERT INTO payment_has_tariffs (payment_id, tariff_id) VALUES ${paymentHasTariffsQuery};`;
+        console.log(paymentQuery);
+        console.log(finalPaymentHasTariffsQuery);
       }
     </script>
 
@@ -217,7 +272,7 @@
         const id = document.getElementById("buscar_socio").value;
 
         console.log(id);
-        
+
         window.electron.getStatement(id);
       });
     </script>
