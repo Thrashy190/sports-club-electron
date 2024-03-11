@@ -65,8 +65,8 @@
           
           <label for="partnerType" class="text-white text-2xl pe-2">Tipo de ingreso:</label>
           <select id="partnerType" onchange="" class="text-2xl text-black">
-              <option value="0">Socio</option>
-              <option value="1">Invitado</option>
+              <option value="1">Socio</option>
+              <option value="2">Invitado</option>
           </select>
 
           <label class="text-white py-2" for="">Nombre:</label>
@@ -96,7 +96,7 @@
           <div class="flex flex-row items-end">
             <div class="flex flex-col pe-2">
               <label class="text-white py-2" for="">Buscar por numero de socio:</label>
-              <input class="ps-2" type="text" name="name" placeholder="#Socio">
+              <input class="ps-2" type="text" id="numeroSocio" name="name" placeholder="#Socio">
             </div>
             
             <button id="search" onclick="mostrarFormReingreso()" class="px-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Buscar</button>         
@@ -104,24 +104,27 @@
 
           <div id="reingreso" class="hidden flex flex-col">
             <label class="text-white py-2" for="">Categoría:</label>
-            <label class="text-black py-2 bg-white ps-2 h-8 items-center"></label>
+            <select id="partnerTypeUpdate" onchange="" class="text-2xl text-black">
+              <option value="1">Socio</option>
+              <option value="2">Invitado</option>
+            </select>
 
             <label class="text-white py-2" for="">Nombre:</label>
-            <label class="text-black py-2 bg-white ps-2 h-8"></label>
+            <input class="ps-2" type="text" name="name" id="name" placeholder="Nombre"  disabled></input>
 
             <label class="text-white py-2" for="">CURP:</label>
-            <input class="ps-2" type="text" name="curp" placeholder="CURP">
+            <input class="ps-2" type="text" name="curp" id="curp" placeholder="CURP" disabled>
 
             <label class="text-white py-2" for="">Dirección:</label>
-            <input class="ps-2" type="text" name="address" placeholder="Dirección">
+            <input class="ps-2" type="text" name="address" id="address" placeholder="Dirección" disabled>
 
             <label class="text-white py-2" for="">Teléfono:</label>
-            <input class="ps-2" type="tel" name="phone" placeholder="Teléfono">
+            <input class="ps-2" type="tel" name="phone" id="phone" placeholder="Teléfono" disabled>
 
             <label class="text-white py-2" for="">Correo electrónico:</label>
-            <input class="ps-2" type="email" name="email" placeholder="Correo electrónico">
+            <input class="ps-2" type="email" name="email" id="email" placeholder="Correo electrónico" disabled>
   
-            <button id="updateCategory" onclick="" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar reingreso</button>         
+            <button id="updateCategory" onclick="updateCategory()" class="px-4 my-4 border-solid border-2 border-rose-600 bg-rose-600 hover:bg-rose-900 hover:border-rose-900 rounded-lg text-white text-lg">Guardar reingreso</button>         
           </div>
         </div>
       </div>
@@ -169,24 +172,23 @@
       </div>
 
       <div id="formPadronSocios" class="formulario hidden">
-        <div class="text-black text-2xl flex flex-col justify-center items-center py-8 px-20">
-          <table class="text-white">
-            <thead>
-              <tr>
-                <th># Socio</th>
-                <th>Nombre</th>
-                <th>CURP</th>
-                <th>Edad actual</th>
-                <th>Teléfono</th>
-                <th>Categoria</th>
-                <th>Estatus</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              
-            </tbody>
-          </table>
+        <div class="text-xs">
+          <table
+          class="mt-10 border border-gray-400 text-white"
+          >
+          <thead>
+            <tr class="grid grid-cols-7 bg-rose-600">
+              <th class="border border-gray-400 p-4 ">ID</th>
+              <th class="border border-gray-400 p-4 ">Nombre</th>
+              <th class="border border-gray-400 p-2 ">CURP</th>
+              <th class="border border-gray-400 p-4 ">Dirección</th>
+              <th class="border border-gray-400 p-4 ">Teléfono</th>
+              <th class="border border-gray-400 p-4 ">Correo electrónico</th>
+              <th class="border border-gray-400 p-4 ">Tipo</th>
+            </tr>
+          </thead>
+          <tbody id="table" class="w-full"></tbody>
+        </table>
         </div>
       </div>
 
@@ -195,6 +197,24 @@
     </main>
 
     <script>
+
+      function dateInputToUnix(dateInput) {
+        // Assuming dateInput is a string in ISO 8601 format (e.g., "YYYY-MM-DD")
+        var date = new Date(dateInput);
+        var unixTimestamp = date.getTime() / 1000; // Convert milliseconds to seconds
+
+        return unixTimestamp;
+      } 
+
+
+      function todayDateToUnix() {
+        // Assuming dateInput is a string in ISO 8601 format (e.g., "YYYY-MM-DD")
+        var date = new Date();
+        var unixTimestamp = date.getTime() / 1000; // Convert milliseconds to seconds
+
+        return unixTimestamp;
+      } 
+
       document.getElementById("savePartner").addEventListener("click", () => {
         const name = document.getElementById("name").value;
         const curp = document.getElementById("curp").value;
@@ -209,11 +229,58 @@
           address: address,
           phone: phone,
           email: email,
-          type: type
+          type: type,
+          date: dateInputToUnix(new Date().toISOString())
         };
 
         window.electron.createPartner(partner);
+
+        location.window.href = "./menu.html";
       });
+
+      async function updateCategory() {
+        
+        const id = document.getElementById("numeroSocio").value;
+        const category = document.getElementById("partnerTypeUpdate").value;
+
+        window.electron.updateCategory({id,category});
+      }
+      
+      async function updateReendtry() {
+        
+
+        const id = document.getElementById("numeroSocio").value;
+        const date = todayDateToUnix()
+        //generate unix date
+
+
+
+        window.electron.updateReendtry(id, date);
+      }
+
+      async function mostrarSocios() {
+   
+        const list = document.getElementById("table");
+
+        const result = await window.electron.getPartners();
+        console.log(result);
+        list.innerHTML = "";
+        result.forEach((t) => {
+          list.innerHTML += `
+              <tr class="grid grid-cols-7">
+                <td class="border border-gray-400 p-4">${t.partner_id}</td>
+                <td class="border border-gray-400 p-4">${t.name}</td>
+                <td class="border border-gray-400 p-2">${t.curp}</td>
+                <td class="border border-gray-400 p-4">${t.address}</td>
+                <td class="border border-gray-400 p-4">${t.phone}</td>
+                <td class="border border-gray-400 p-4">${t.email}</td>
+                <td class="border border-gray-400 p-4">${t.partner_type == 1?"Socio":"Invitado"}</td>
+              </tr>
+          `;
+        });
+      }
+
+      mostrarSocios();
     </script>
 
   </body>

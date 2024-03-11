@@ -35,28 +35,45 @@ async function getSocio(partner_id) {
 async function getSocios() {
   const conn = await getConnection();
 
-  return new Promise((resolve, reject) => {
-    conn.query("SELECT * FROM partners", (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results[0]);
-      }
-    });
-  });
+  const results = await conn.query(
+    "SELECT P.* FROM partners P LEFT JOIN deaths D ON P.partner_id = D.partner_id WHERE D.partner_id IS NULL;"
+  );
+  return results;
 }
 
-// const getParters = async () => {
-//   const conn = await getConnection();
-//   const results = await conn.query("SELECT * FROM partenrs");
-//   return results;
-// };
+async function updateCategory(partner_id, category) {
+  const conn = await getConnection();
 
-const createPartner = async (name, address, phone, email, curp, type) => {
+  const results = await conn.query(
+    "UPDATE partners SET partner_type = ? WHERE partner_id = ?",
+    [category, partner_id]
+  );
+  return results;
+}
+
+async function updateReentry(partner_id, reentry) {
+  const conn = await getConnection();
+
+  const results = await conn.query(
+    "UPDATE partners SET date_reentry =   WHERE partner_id = ?",
+    [reentry, partner_id]
+  );
+  return results;
+}
+
+const createPartner = async (
+  name,
+  address,
+  phone,
+  email,
+  curp,
+  type,
+  date_entry
+) => {
   const conn = await getConnection();
   const results = await conn.query(
-    "INSERT INTO partners (name, address, phone, email, curp, partner_type) VALUES (?, ?, ?, ?, ?, ?)",
-    [name, address, phone, email, curp, type]
+    "INSERT INTO partners (name, address, phone, email, curp, partner_type, date_entry) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    [name, address, phone, email, curp, type, date_entry]
   );
   return results;
 };
@@ -236,6 +253,8 @@ module.exports = {
   addDefuncion,
   getSocio,
   getSocios,
+  updateCategory,
+  updateReentry,
   getTarifas,
   addTarifa,
   createPartner,

@@ -4,7 +4,10 @@ const {
   getUsers,
   getUsersByUser,
   getSocio,
+  getSocios,
   createPartner,
+  updateCategory,
+  updateReentry,
   getTarifas,
   addTarifa,
   getPagosEfectuados,
@@ -36,7 +39,8 @@ ipcMain.on("create-partner", async (event, partner) => {
     partner.phone,
     partner.email,
     partner.curp,
-    partner.type
+    partner.type,
+    partner.date
   );
 });
 
@@ -49,9 +53,25 @@ ipcMain.on("get-statement", (event, id) => {
   });
 });
 
+ipcMain.handle("update-category", async (event, data) => {
+  const { id, category } = data;
+  console.log("update-category", data);
+  return await updateCategory(id, category);
+});
+
+ipcMain.handle("update-reentry", async (event, data) => {
+  console.log("update-reentry", data);
+  return await updateReentry(data);
+});
+
 ipcMain.handle("get-partner", async (event, id) => {
   console.log("get-partner", id);
   return await getSocio(id);
+});
+
+ipcMain.handle("get-partners", async (event) => {
+  console.log("get-partners");
+  return await getSocios();
 });
 
 ipcMain.handle("get-tariffs", async (event, type) => {
@@ -92,7 +112,7 @@ function createWindow() {
 }
 
 function openIndex() {
-  mainWindow.loadFile("./src/views/receipts.html");
+  mainWindow.loadFile("./src/views/index.html");
 }
 
 function openHome() {

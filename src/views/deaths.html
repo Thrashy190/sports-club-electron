@@ -231,14 +231,6 @@
         return ddmmyyyy;
       }
 
-      function dateInputToUnix(dateInput) {
-        // Assuming dateInput is a string in ISO 8601 format (e.g., "YYYY-MM-DD")
-        var date = new Date(dateInput);
-        var unixTimestamp = date.getTime() / 1000; // Convert milliseconds to seconds
-
-        return unixTimestamp;
-      }
-
       document
         .getElementById("numeroSocio")
         .addEventListener("input", async function () {
