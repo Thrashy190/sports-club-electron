@@ -1,3 +1,6 @@
+CREATE DATABASE sport_club_db;
+CREATE USER 'its'@'%' IDENTIFIED BY 'pass';
+
 CREATE TABLE users(
     user_id INT NOT NULL AUTO_INCREMENT,
     user_name VARCHAR(255),
@@ -54,3 +57,5 @@ CREATE TABLE payment_has_tariffs(
     CONSTRAINT fk_payment_id_payment_has_tariffs FOREIGN KEY (payment_id) REFERENCES payments (payment_id),
     CONSTRAINT fk_tariff_id_payment_has_tariffs FOREIGN KEY (tariff_id) REFERENCES tariffs (tariff_id)
 );
+
+INSERT INTO users (user_name, password) VALUES ('admin', '1234');
