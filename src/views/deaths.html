@@ -22,15 +22,7 @@
         id="numeroSocio"
         name="numeroSocio"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
       />
-      <!-- boton -->
-      <button
-        type="button"
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Buscar
-      </button>
 
       <p class="text-white text-2xl font-bold text-center pb-5">
         Datos Generales
@@ -43,28 +35,7 @@
         name="nombreSocio"
         class="p-2 mb-3 border rounded-md"
         placeholder=""
-      />
-
-      <label for="apellidoPaterno" class="text-white ps-3"
-        >Apellido Paterno:</label
-      >
-      <input
-        type="text"
-        id="apellidoPaterno"
-        name="apellidoPaterno"
-        class="p-2 mb-3 border rounded-md"
-        placeholder=""
-      />
-
-      <label for="apellidoMaterno" class="text-white ps-3"
-        >Apellido Materno:</label
-      >
-      <input
-        type="text"
-        id="apellidoMaterno"
-        name="apellidoMaterno"
-        class="p-2 mb-2 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <div class="mb-4"></div>
@@ -75,7 +46,7 @@
         id="tipo"
         name="tipo"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <label for="otraEdad" class="text-white ps-3">Edad:</label>
@@ -84,7 +55,7 @@
         id="otraEdad"
         name="otraEdad"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <label for="curp" class="text-white ps-3">CURP:</label>
@@ -94,6 +65,7 @@
         name="curp"
         class="p-2 mb-4 border rounded-md"
         placeholder=""
+        disabled
       />
 
       <label for="correo" class="text-white ps-3">Correo:</label>
@@ -102,7 +74,7 @@
         id="correo"
         name="correo"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <div class="mb-4"></div>
@@ -113,18 +85,18 @@
         id="telefono"
         name="telefono"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
-      <label for="fechaIngreso" class="text-white ps-3"
-        >Fecha de Ingreso:</label
-      >
+      <label for="fechaIngreso" class="text-white ps-3">
+        Fecha de Ingreso:
+      </label>
       <input
         type="text"
         id="fechaIngreso"
         name="fechaIngreso"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <label for="direccion" class="text-white ps-3">Dirección:</label>
@@ -133,7 +105,7 @@
         id="direccion"
         name="direccion"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
+        disabled
       />
 
       <p class="text-white text-2xl font-bold pb-3 text-center">
@@ -154,22 +126,21 @@
         id="beneficiario"
         name="beneficiario"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
       />
 
-      <label for="monto" class="text-white ps-3">Monto$:</label>
+      <label for="monto" class="text-white ps-3">Monto:</label>
       <input
-        type="text"
+        type="number"
         id="monto"
         name="monto"
         class="p-2 mb-4 border rounded-md"
-        placeholder=""
       />
 
       <div class="mb-4"></div>
 
       <button
         type="button"
+        onclick="getDefunctions()"
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
         Ver Socios Fallecidos
@@ -177,6 +148,7 @@
 
       <button
         type="button"
+        onclick="addDeath()"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
       >
         Guardar
@@ -189,7 +161,151 @@
       >
         Cerrar
       </button>
+      <table
+        class="mt-10 flex justify-center items-center flex-col border border-gray-400 text-white"
+      >
+        <thead class="w-full">
+          <tr class="grid grid-cols-5 bg-rose-600">
+            <th class="border border-gray-400 p-4 w-full">ID</th>
+            <th class="border border-gray-400 p-4 w-full">Nombre</th>
+            <th class="border border-gray-400 p-4 w-full">fecha</th>
+            <th class="border border-gray-400 p-4 w-full">Beneficiario</th>
+            <th class="border border-gray-400 p-4 w-full">Monto</th>
+          </tr>
+        </thead>
+        <tbody id="table" class="w-full"></tbody>
+      </table>
     </main>
+    <script>
+      function calculateAgeFromCURP(curp) {
+        // Extract birthdate from CURP
+        var birthYear = parseInt(curp.substr(4, 2));
+        var birthMonth = parseInt(curp.substr(6, 2));
+        var birthDay = parseInt(curp.substr(8, 2));
+
+        var tenthCharacter = curp.charAt(9);
+
+        if (birthYear >= 0 && birthYear <= 24) {
+          birthYear += 2000;
+        } else if (birthYear >= 30 && birthYear <= 99) {
+          birthYear += 1900;
+        }
+
+        // Get current date
+        var currentDate = new Date();
+        var currentYear = currentDate.getFullYear();
+        var currentMonth = currentDate.getMonth() + 1; // Months are zero-based
+        var currentDay = currentDate.getDate();
+
+        // Calculate age
+        var age = currentYear - birthYear;
+        if (
+          currentMonth < birthMonth ||
+          (currentMonth === birthMonth && currentDay < birthDay)
+        ) {
+          age--; // Subtract 1 if the current date is before the birthdate in this year
+        }
+
+        return age;
+      }
+
+      function unixTimestampToDDMMYYYY(unixTimestamp) {
+        // Convert Unix timestamp to milliseconds
+        var milliseconds = unixTimestamp * 1000; // or unixTimestamp * 1000 for seconds
+
+        console.log(milliseconds);
+
+        // Create a new Date object
+        var date = new Date(milliseconds);
+
+        console.log(date);
+
+        // Get day, month, and year components
+        var day = date.getDate().toString().padStart(2, "0");
+        var month = (date.getMonth() + 1).toString().padStart(2, "0"); // Month is zero-based, so we add 1
+        var year = date.getFullYear();
+
+        // Concatenate in DDMMYYYY format
+        var ddmmyyyy = day + "/" + month + "/" + year;
+
+        return ddmmyyyy;
+      }
+
+      function dateInputToUnix(dateInput) {
+        // Assuming dateInput is a string in ISO 8601 format (e.g., "YYYY-MM-DD")
+        var date = new Date(dateInput);
+        var unixTimestamp = date.getTime() / 1000; // Convert milliseconds to seconds
+
+        return unixTimestamp;
+      }
+
+      document
+        .getElementById("numeroSocio")
+        .addEventListener("input", async function () {
+          let termino = this.value.trim();
+
+          const result = await window.electron.getPartner(termino);
+          console.log(result[0]);
+
+          if (result) {
+            document.getElementById("nombreSocio").value = result[0].name;
+            document.getElementById("curp").value = result[0].curp;
+            document.getElementById("tipo").value = result[0].partner_type;
+            document.getElementById("otraEdad").value = calculateAgeFromCURP(
+              result[0].curp
+            );
+            document.getElementById("correo").value = result[0].email;
+            document.getElementById("telefono").value = result[0].phone;
+            document.getElementById("fechaIngreso").value =
+              unixTimestampToDDMMYYYY(result[0].date_entry);
+            document.getElementById("direccion").value = result[0].address;
+          }
+        });
+
+      function dateInputToUnix(dateInput) {
+        // Assuming dateInput is a string in ISO 8601 format (e.g., "YYYY-MM-DD")
+        var date = new Date(dateInput);
+        var unixTimestamp = date.getTime() / 1000; // Convert milliseconds to seconds
+
+        return unixTimestamp;
+      }
+
+      async function addDeath() {
+        const partner_id = document.getElementById("numeroSocio").value;
+        const death_date = document.getElementById("fechaDefuncion").value;
+        const beneficiary = document.getElementById("beneficiario").value;
+        const amount = document.getElementById("monto").value;
+
+        const result = await window.electron.addDefuncion({
+          partner_id: partner_id,
+          death_date: dateInputToUnix(death_date),
+          beneficiary: beneficiary,
+          amount: amount,
+        });
+
+        console.log(result);
+      }
+
+      async function getDefunctions() {
+        const result = await window.electron.getDefunciones();
+        console.log(result);
+
+        const list = document.getElementById("table");
+
+        list.innerHTML = "";
+        result.forEach((t) => {
+          list.innerHTML += `
+            <tr class="grid grid-cols-5">
+              <td class="border border-gray-400 p-4 w-full">${t.partner_id}</td>
+              <td class="border border-gray-400 p-4 w-full">${t.name}</td>
+              <td class="border border-gray-400 p-4 w-full">${unixTimestampToDDMMYYYY(t.date_death)}</td>
+              <td class="border border-gray-400 p-4 w-full">${t.beneficiary_name}</td>
+              <td class="border border-gray-400 p-4 w-full">${t.death_amount}</td>
+            </tr>
+            `;
+        });
+      }
+    </script>
     <script>
       function Salir() {
         window.location.href = "./menu.html";

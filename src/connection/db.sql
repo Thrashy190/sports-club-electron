@@ -15,15 +15,15 @@ CREATE TABLE partners(
 	email VARCHAR(255),
 	partner_type INT,
 	file_rute_pdf VARCHAR(255),
-	date_entry DATETIME,
-	date_reentry DATETIME,
-	date_change DATETIME,
+	date_entry INT,
+	date_reentry INT,
+	date_change INT,
 	PRIMARY KEY (partner_id)
 );
 
 CREATE TABLE deaths(
 	death_id INT NOT NULL AUTO_INCREMENT,
-	date_death DATETIME,
+	date_death INT,
 	beneficiary_name VARCHAR(255),
 	death_amount DOUBLE,
 	partner_id INT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE deaths(
 
 CREATE TABLE payments(
     payment_id INT NOT NULL AUTO_INCREMENT,
-    date_payment DATETIME,
+    date_payment INT,
     amount DOUBLE,
     partner_id INT NOT NULL,
     PRIMARY KEY (payment_id),
@@ -54,6 +54,3 @@ CREATE TABLE payment_has_tariffs(
     CONSTRAINT fk_payment_id_payment_has_tariffs FOREIGN KEY (payment_id) REFERENCES payments (payment_id),
     CONSTRAINT fk_tariff_id_payment_has_tariffs FOREIGN KEY (tariff_id) REFERENCES tariffs (tariff_id)
 );
-
-
-

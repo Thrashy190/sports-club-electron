@@ -4,8 +4,18 @@ const {
   getUsers,
   getUsersByUser,
   getSocio,
+  getSocios,
+  createPartner,
+  updateCategory,
+  updateReentry,
   getTarifas,
   addTarifa,
+  getPagosEfectuados,
+  generarEstadoCuenta,
+  updateTarifa,
+  addDefuncion,
+  getDefuncionesWithPartner,
+  createPayments,
 } = require("./src/connection/functions");
 
 let mainWindow;
@@ -23,9 +33,51 @@ ipcMain.on("login", (event, data) => {
   });
 });
 
+ipcMain.on("create-partner", async (event, partner) => {
+  return await createPartner(
+    partner.name,
+    partner.address,
+    partner.phone,
+    partner.email,
+    partner.curp,
+    partner.type,
+    partner.date
+  );
+});
+
+ipcMain.on("get-statement", (event, id) => {
+  getSocio(id).then((res) => {
+    console.log(res[0].partner_id);
+    getPagosEfectuados(res[0].partner_id).then((pagos) => {
+      generarEstadoCuenta(pagos);
+    });
+  });
+});
+
+ipcMain.handle("create-payment", async (event, data) => {
+  console.log("create-payment", data);
+  return await createPayments(data);
+});
+
+ipcMain.handle("update-category", async (event, data) => {
+  const { id, category } = data;
+  console.log("update-category", data);
+  return await updateCategory(id, category);
+});
+
+ipcMain.handle("update-reentry", async (event, data) => {
+  console.log("update-reentry", data);
+  return await updateReentry(data);
+});
+
 ipcMain.handle("get-partner", async (event, id) => {
   console.log("get-partner", id);
   return await getSocio(id);
+});
+
+ipcMain.handle("get-partners", async (event) => {
+  console.log("get-partners");
+  return await getSocios();
 });
 
 ipcMain.handle("get-tariffs", async (event, type) => {
@@ -36,6 +88,21 @@ ipcMain.handle("get-tariffs", async (event, type) => {
 ipcMain.handle("add-tariff", async (event, data) => {
   console.log("add-tariff", data);
   return await addTarifa(data);
+});
+
+ipcMain.handle("update-tariff", async (event, data) => {
+  console.log("update-tariff", data);
+  return await updateTarifa(data);
+});
+
+ipcMain.handle("add-defuncion", async (event, data) => {
+  console.log("add-defuncion", data);
+  return await addDefuncion(data);
+});
+
+ipcMain.handle("get-defunciones", async (event) => {
+  console.log("get-defunciones");
+  return await getDefuncionesWithPartner();
 });
 
 ipcMain.handle("ping", () => "pong");

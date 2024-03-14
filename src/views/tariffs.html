@@ -50,71 +50,52 @@
     </header>
 
     <main class="flex gap-10 flex-col px-6 pt-10">
-      <h1 class="text-center text-2xl font-semibold">Tarifas</h1>
-      <div class="flex flex-row gap-4">
+      <h1 class="text-center text-2xl font-semibold text-white">Tarifas</h1>
+      <div class="flex flex-row">
         <select id="opcion" onchange="mostrarFormulario()">
           <option value="">Selecciona</option>
           <option value="casa">Casa club</option>
           <option value="ayuda">Ayuda mutua</option>
         </select>
       </div>
-      <div class="">
+      <div>
         <div id="formCasa" class="hidden formulario flex flex-col gap-7">
-          <span class="text-white">Casa club</span>
-          <div>
-            <label for="concept" class="text-white ps-3"> Concepto: </label>
-            <input type="text" id="concept" />
-            <label for="money" class="text-white ps-3"> Monto: </label>
-            <input type="number" id="money" />
-          </div>
-
-          <button
-            type="button"
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Agregar tarifa
-          </button>
-
-          <button
-            type="button"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
-          >
-            Actualizar tarifa
-          </button>
+          <span class="text-white text-2xl pb-2">Casa club</span>
         </div>
         <div id="formAyuda" class="formulario hidden flex flex-col gap-7">
-          <span class="text-white">Ayuda mutua</span>
-          <div>
-            <label for="concept" class="text-white ps-3"> Concepto: </label>
-            <input type="text" id="concept" />
-            <label for="money" class="text-white ps-3"> Monto: </label>
-            <input type="number" id="money" />
-          </div>
-          <button
-            type="button"
-            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Agregar tarifa
-          </button>
-
-          <button
-            type="button"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
-          >
-            Actualizar tarifa
-          </button>
+          <span class="text-white text-2xl pb-2">Ayuda mutua</span>
         </div>
-
-        <table
-          class="mt-10 gap-6 flex justify-center items-center flex-col border border-gray-400 p-4"
+        <div class="pb-10">
+          <label for="concept" class="text-white"> Concepto: </label>
+          <input type="text" id="concept" />
+          <label for="money" class="text-white"> Monto: </label>
+          <input type="number" id="money" />
+        </div>
+        <button
+          type="button"
+          onclick="addTarrif()"
+          class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
         >
-          <thead>
-            <tr class="flex gap-10">
-              <th>Concept</th>
-              <th>Amount</th>
+          Agregar tarifa
+        </button>
+
+        <button
+          type="button"
+          onclick="updateTariff()"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+        >
+          Actualizar tarifa
+        </button>
+        <table
+          class="mt-10 flex justify-center items-center flex-col border border-gray-400 text-white"
+        >
+          <thead class="w-full">
+            <tr class="grid grid-cols-2 bg-rose-600">
+              <th class="border border-gray-400 p-4 w-full">Concepto</th>
+              <th class="border border-gray-400 p-4 w-full">Cantidad</th>
             </tr>
           </thead>
-          <tbody id="table"></tbody>
+          <tbody id="table" class="w-full"></tbody>
         </table>
       </div>
     </main>
@@ -141,9 +122,9 @@
       list.innerHTML = "";
       result.forEach((t) => {
         list.innerHTML += `
-            <tr class="flex gap-10">
-              <td>${t.concept}</td>
-              <td>${t.amount}</td>
+            <tr class="grid grid-cols-2">
+              <td class="border border-gray-400 p-4 w-full">${t.concept}</td>
+              <td class="border border-gray-400 p-4 w-full">${t.amount}</td>
             </tr>
             `;
       });
@@ -165,17 +146,42 @@
       const list = document.getElementById("table");
 
       list.innerHTML += `
-            <tr class="flex gap-10">
-              <td>${concept}</td>
-              <td>${money}</td>
+            <tr class="grid grid-cols-2">
+              <td class="border border-gray-400 p-4 w-full">${concept}</td>
+              <td class="border border-gray-400 p-4 w-full ">${money}</td>
             </tr>
             `;
 
       console.log(result);
     }
 
-    document
-      .getElementById("opcion")
-      .addEventListener("change", mostrarFormulario);
+    async function updateTariff() {
+      const concept = document.getElementById("concept").value;
+      const money = document.getElementById("money").value;
+      const option = document.getElementById("opcion").value;
+
+      const result = await window.electron.updateTariff({
+        concept: concept,
+        amount: money,
+      });
+
+      console.log(result);
+
+      const list = document.getElementById("table");
+      const rendernew = await window.electron.getTariffs(
+        option == "casa" ? 1 : 2
+      );
+      console.log(result);
+
+      list.innerHTML = "";
+      rendernew.forEach((t) => {
+        list.innerHTML += `
+            <tr class="grid grid-cols-2">
+              <td class="border border-gray-400 p-4 w-full">${t.concept}</td>
+              <td class="border border-gray-400 p-4 w-full">${t.amount}</td>
+            </tr>
+            `;
+      });
+    }
   </script>
 </html>
