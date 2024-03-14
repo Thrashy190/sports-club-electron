@@ -115,18 +115,6 @@ async function updateTarifa(data) {
   );
 
   return results;
-//updateTarifa
-
-async function updateTarifa(data) {
-  const { concept, amount } = data;
-  const conn = await getConnection();
-
-  const results = await conn.query(
-    "UPDATE tariffs SET  amount = ? WHERE concept = ?",
-    [amount, concept]
-  );
-
-  return results;
 }
 
 // ---------------------------------------------- RECIBOS ---------------------------------------------------
@@ -264,57 +252,11 @@ async function getDefuncionesWithPartner() {
   `
   );
   return results;
-async function addDefuncion(data) {
-  const { partner_id, death_date, beneficiary, amount } = data;
-  const conn = await getConnection();
-  const results = await conn.query(
-    "INSERT INTO deaths (partner_id, date_death, beneficiary_name, death_amount) VALUES (?, ?, ?, ?)",
-    [partner_id, death_date, beneficiary, amount]
-  );
-  return results;
-}
-
-async function getDefuncionesWithPayments() {
-  const conn = await getConnection();
-  const results = await conn.query(
-    `
-    SELECT 
-      s.socio_id, 
-      s.nombre, 
-      SUM(p.monto_final) AS monto_acumulado, 
-      d.fecha_defuncion, 
-      d.monto, 
-      d.nombre_beneficiario
-    FROM socios s
-    INNER JOIN defunciones d ON d.socio_id = s.socio_id
-    INNER JOIN pagos p ON p.socio_id = s.socio_id
-    GROUP BY s.socio_id, s.nombre, d.fecha_defuncion, d.monto, d.nombre_beneficiario
-  `
-  );
-  return results;
-}
-
-async function getDefuncionesWithPartner() {
-  const conn = await getConnection();
-  const results = await conn.query(
-    `
-    SELECT 
-      p.partner_id, 
-      p.name, 
-      d.date_death, 
-      d.beneficiary_name, 
-      d.death_amount
-    FROM partners p
-    INNER JOIN deaths d ON d.partner_id = p.partner_id
-  `
-  );
-  return results;
 }
 
 module.exports = {
   getUsers,
   getUsersByUser,
-  addDefuncion,
   addDefuncion,
   getSocio,
   getSocios,
